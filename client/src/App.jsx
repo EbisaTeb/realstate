@@ -1,9 +1,21 @@
-import './App.css'
+import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import Home from './pages/Home'
+import About from './pages/About'
+import Profile from './pages/Profile'
+import Signin from './pages/Signin'
+import SignUp from './pages/SignUP'
 function App() {
  return(
-    <h1 className="text-3xl text-red-700 font-bold underline">
-      Hello world!
-    </h1>
+  
+  <BrowserRouter>
+   <Routes>
+    <Route path='/' element={<Home/>}/>
+    <Route path='/sign-in' element={<Signin/>}/>
+    <Route path='/sign-up' element={<SignUp/>}/>
+    <Route path='/about' element={<About/>}/>
+    <Route path='/profile' element={<Profile/>}/>
+   </Routes>
+   </BrowserRouter>
   )
 }
 export default App
