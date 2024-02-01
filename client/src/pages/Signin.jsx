@@ -17,7 +17,6 @@ const {loading,error}=useSelector((state)=>state.user)
     e.preventDefault();
     try { 
       dispatch(signInStart())
-      setLoading(true);
     const res=await fetch('/api/auth/signin', 
     {
   method:'POST',
