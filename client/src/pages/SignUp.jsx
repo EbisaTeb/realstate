@@ -15,6 +15,7 @@ export default function SignUp() {
   };
   const handleSumbit=async (e)=>{
     e.preventDefault();
+    setLoading(true);
     try {
       setLoading(true);
     const res=await fetch('/api/auth/signup', 
@@ -32,7 +33,8 @@ export default function SignUp() {
       setError(data.message);
       return;
     }
-    setLoading(false)
+    setLoading(false);
+    setError(null);
     navigate('/sign-in')
     } catch (error) {
       setLoading(false);
