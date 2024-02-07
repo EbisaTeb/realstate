@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useRef,useState ,useEffect} from 'react'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import { app } from '../firebase';
-import { updateUserStart,signInSuccess,signInFailure, updateUserFailure } from '../redux/user/userSlice';
+import { updateUserStart,updateUserSuccess, updateUserFailure,deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 export default function Profile(){
   const fileRef = useRef(null);
@@ -10,9 +10,9 @@ export default function Profile(){
   const [file ,setFile]=useState(undefined)
   const [filePerc,setFilePerc]=useState(0);
   const [fileUploadError, setFileUploadError]=useState(false);
- const [formData,setFormData]=useState({});
- const [updateSuccess,setUpdateSuccess]=useState(false);
- const dispatch =useDispatch();
+  const [formData,setFormData]=useState({});
+  const [updateSuccess,setUpdateSuccess]=useState(false);
+   const dispatch =useDispatch();
   
  console.log(formData);
  console.log(filePerc);
@@ -38,18 +38,18 @@ uploadTask.on('state_changed',
   const progress=(snapshot.bytesTransferred /
   snapshot.totalBytes)*100;
   setFilePerc(Math.round(progress))
-},
+             },
 (error)=>{
   setFileUploadError(true)
-},
-()=>{
-  getDownloadURL(uploadTask.snapshot.ref).then
+        },
+  ()=>{
+     getDownloadURL(uploadTask.snapshot.ref).then
   ((downloadURL)=>
  setFormData({...formData,avatar:downloadURL})
   );
 }
 )};
-const  handleChange=(e)=>{
+   const  handleChange=(e)=>{
   setFormData({...formData,[e.target.id]:e.target.value});
   };
   const handleSubmit= async (e)=>{
@@ -64,15 +64,32 @@ const  handleChange=(e)=>{
         body:JSON.stringify(formData),
       });
       const data= await res.json();
-      if (res.status === false){
-        dispatch(updateUserFailure(data));
+      if (res.success === false){
+        dispatch(updateUserFailure(data.message));
         return;
     } 
-    dispatch(signInSuccess(data));
+    dispatch(updateUserSuccess(data));
     setUpdateSuccess(true);
     }
   catch (error) {
-      dispatch(signInFailure(error.message));
+      dispatch(updateUserFailure(error.message));
+    }
+  }
+  const handleDeleteUser=async()=>{
+    try {
+      dispatch(deleteUserStart());
+      const res= await fetch(`/api/user/delete/${currentUser._id}`,{
+         method:'DELETE',
+      });
+      const data=await res.json();
+      if(data.success===false){
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+      
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   }
   return (
@@ -102,11 +119,11 @@ const  handleChange=(e)=>{
        </button>
     </form>
     <div className=" flex justify-between mt-5">
-      <span className='text-red-700 cursor-pointer'>Delete account</span>
+      <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete account</span>
       <span className='text-red-700 cursor-pointer'>Sign out</span>
     </div>
-    <p className='text-red-700 mt-7' >{error?error:''}</p>
-    <p className='text-green-700 mt-7' >{updateSuccess?'User is updated successfully':''}</p>
+    <p className='text-red-700 mt-7' >{error? error : '' }</p>
+    <p className='text-green-700 mt-7' >{updateSuccess ? 'User is updated successfully' : ''}</p>
     </div>
   )
 }
