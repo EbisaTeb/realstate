@@ -32,7 +32,7 @@ export const updateListing = async (req, res,next) => {
     if (!listing) {
         return  next(errorHandler(404,"Listing not found") );
     }
-    if (req.user.id !== listing.userRef) {
+    if (req.user._id !== listing.userRef) {
         return next(errorHandler(401,"You can only update your own listings"));
     }
     try {
@@ -50,3 +50,16 @@ export const updateListing = async (req, res,next) => {
       }
 
 }
+
+export const getListing = async (req, res,next) => {
+    try {
+        const listing = await Listing.findById(req.params.id);
+        if (!listing) {
+            return next(errorHandler(404,"Listing not found"));
+        }
+        res.status(200).json(listing);
+    } catch (error) {
+        next(error);
+    }
+}
+;
