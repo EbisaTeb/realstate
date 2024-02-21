@@ -14,9 +14,9 @@ export default function Listing() {
     const [error,setError]=useState(false);
     const [copied,setCopied]=useState(false);
     const params=useParams()
-    const [contact,setContact]=useState(true);
+    const [contact,setContact]=useState(false);
     const {currentUser}=useSelector((state) => state.user);
-    console.log(currentUser._id,listing?.userRef);
+    console.log(currentUser._id,listing?.useRef);
     useEffect(()=>{
         const fetchListing = async () => {
             try {
@@ -112,11 +112,12 @@ export default function Listing() {
         { listing.furnished ? 'furnished spot ' : 'No furnished'}
     </li>
   </ul>
-  {currentUser && listing.userRef !== currentUser._id && !contact && (
+  {currentUser && currentUser._id !== listing.useRef && !contact && (
     <button onClick={() => setContact(true)} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
         Contact Landlord
     </button>
 )}
+
 {contact && <Contact listing={listing}/> }
   </div> 
   </div>
