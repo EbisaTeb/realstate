@@ -76,7 +76,7 @@ export default function Home() {
       {
         offerListings.length>0 && offerListings.map((listing)=>(
           <SwiperSlide key={listing._id}>
-            <div style={{background:`url(${listing.imageUrls[0]}) center no-repeat`, backgroundSize:"cover"}}
+            <div style={{background:`url(${listing.imageUrls[0]}) center no-repeat `, backgroundSize:"cover"}}
              className='h-[500px]' ></div>
           </SwiperSlide>
         ))}
